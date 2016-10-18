@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<Sysmon schemaversion="3.10">
+  <!-- Capture SHA256 and IMPHASH Hashes -->
+  <HashAlgorithms>SHA256,IMPHASH</HashAlgorithms>
+  <EventFiltering>
+    <!-- Log all drivers loads except if the signature is Microsoft Windows -->
+  	<DriverLoad onmatch="exclude">
+          <Signature condition="is">Microsoft Windows</Signature>          
+    </DriverLoad>
+	<!-- Log all images except if it's Microsoft or Windows signed -->
+	<ImageLoad onmatch="exclude">
+		<Signature condition="is">Microsoft Windows</Signature>		
+		<Signature condition="is">Microsoft Corporation</Signature>		
+	</ImageLoad>
+	<!-- log only images loaded  from user profile directory, clear some noise and also monitor what is loaded  on lsass.exe> -->
+	<ImageLoad onmatch="include">
+		<Image condition="end with">lsass.exe</Image>
+		<Image condition="contains">C:\Users</Image>
+	</ImageLoad>
+    <!-- Log all CreateRemoteThread, exclude CSRSS and Winlogon -->
+	<CreateRemoteThread onmatch="exclude">
+		<SourceImage condition="is">C:\Windows\System32\csrss.exe</SourceImage>
+		<SourceImage condition="is">C:\Windows\System32\winlogon.exe</SourceImage>
+	</CreateRemoteThread>
+	<!-- Log all raw disk access if the Image is System or svchost  -->
+	<RawAccessRead onmatch="include">
+     <Image condition="contains">C:\Windows\System32\</Image>
+    <Image condition="contains">C:\Users</Image>
+    <Image condition="contains">C:\$recycle.bin</Image>
+	</RawAccessRead>
+	<!-- Log all file modified creation time -->
+	<FileCreateTime onmatch="exclude"/>
+	<!-- Log process access -->
+	<!-- Only capture access to lsass and winlogon -->
+	<ProcessAccess onmatch="include">		
+		<TargetImage condition="is">C:\Windows\system32\lsass.exe</TargetImage>
+		<TargetImage condition="is">C:\Windows\system32\winlogon.exe</TargetImage>		
+	</ProcessAccess>	
+	<ProcessAccess onmatch="exclude">		
+		<SourceImage condition="is">C:\WINDOWS\System32\Taskmgr.exe</SourceImage>
+	</ProcessAccess>		
+	<!-- Log all initiated network connection -->
+	<NetworkConnect onmatch="exclude">
+       <Image condition="contains">chrome.exe</Image>
+       <Image condition="contains">iexplore.exe</Image>
+       <Image condition="contains">firefox.exe</Image>
+       <Image condition="contains">outlook.exe</Image>
+       <Image condition="contains">Skype.exe</Image>
+       <Image condition="contains">lync.exe</Image>
+       <Image condition="contains">GoogleUpdate.exe</Image>
+	   <Image condition="contains">qbittorrent.exe</Image>
+  </NetworkConnect>	
+	<!-- Log all process creation -->
+	<ProcessCreate onmatch="exclude"/>
+    <!-- Do not log process termination -->
+	<ProcessTerminate onmatch="include"/>
+  </EventFiltering>
+</Sysmon>
