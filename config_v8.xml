@@ -169,7 +169,10 @@
 			<SourceImage condition="is">C:\WINDOWS\system32\csrss.exe</SourceImage>
 			<SourceImage condition="is">C:\WINDOWS\System32\smss.exe</SourceImage>
 			<SourceImage condition="is">C:\Program Files\Windows Defender Advanced Threat Protection\MsSense.exe</SourceImage>
-			<SourceImage condition="is">C:\Windows\syswow64\MsiExec.exe</SourceImage>			
+			<SourceImage condition="is">C:\Windows\syswow64\MsiExec.exe</SourceImage>		
+			<SourceImage condition="is">C:\Program Files\Windows Defender\MsMpEng.exe</SourceImage>			
+			<SourceImage condition="is">C:\WINDOWS\Explorer.EXE</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\Speech_OneCore\Common\SpeechRuntime.exe</SourceImage>
 		</ProcessAccess>
 		<!--Event ID 11: FileCreate-->
 		<FileCreate onmatch="include">
