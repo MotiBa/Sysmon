@@ -1,0 +1,263 @@
+<?xml version="1.0"?>
+<!--	Sysmon sample configuration file (Updated: 12/12/2017)
+		Created by: Moti Bani (Moti.Ba@hotmail.com)
+		=====================================================
+		THIS SAMPLE CFILE AND ANY RELATED INFORMATION 
+		ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+		EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT 
+		LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY 
+		AND/OR FITNESS FOR A PARTICULAR PURPOSE
+		Use is subject to the terms specified at http://www.microsoft.com/info/cpyright.htm. 
+-->
+<Sysmon schemaversion="3.30">
+	<HashAlgorithms>SHA256,IMPHASH</HashAlgorithms>
+	<EventFiltering>
+		<!--Event ID 1: Process creation-->
+		<ProcessCreate onmatch="exclude">
+			<!-- Exclude Universal Apps -->
+			<IntegrityLevel condition="is">AppContainer</IntegrityLevel>
+			<!-- Exclude common Windows binaries-->
+			<Image condition="is">C:\Windows\System32\RuntimeBroker.exe</Image>
+			<Image condition="is">C:\Windows\System32\Speech_OneCore\common\SpeechRuntime.exe</Image>
+			<Image condition="is">C:\Windows\System32\MusNotification.exe</Image>
+			<Image condition="is">C:\Windows\System32\csrss.exe</Image>
+			<Image condition="is">C:\Windows\System32\wermgr.exe</Image>			
+			<Image condition="is">C:\Windows\System32\audiodg.exe</Image>
+			<Image condition="is">C:\Windows\System32\backgroundTaskHost.exe</Image>
+			<Image condition="is">C:\Windows\System32\BackgroundTransferHost.exe</Image>
+			<Image condition="is">C:\Windows\System32\dllhost.exe</Image>
+			<Image condition="is">C:\Windows\System32\smartscreen.exe</Image>
+			<Image condition="is">C:\Windows\System32\SearchFilterHost.exe</Image>
+			<Image condition="is">C:\Windows\System32\conhost.exe</Image>
+			<Image condition="is">C:\Windows\System32\SearchProtocolHost.exe</Image>
+			<Image condition="is">C:\Windows\System32\msiexec.exe</Image>	  
+			<Image condition="is">C:\Windows\System32\consent.exe</Image>
+			<Image condition="is">C:\Windows\System32\taskhostw.exe</Image>	  
+			<Image condition="is">C:\Windows\system32\sppsvc.exe</Image> 	
+			<Image condition="is">C:\Windows\system32\svchost.exe</Image>
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\mscorsvw.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorsvw.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.Net\Framework64\v3.0\WPF\PresentationFontCache.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.Net\Framework64\v3.0\WPF\PresentationFontCache.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngentask.exe</Image>
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\mscorsvw.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngentask.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorsvw.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngentask.exe</Image> 
+			<Image condition="is">C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngentask.exe</Image> 
+		</ProcessCreate>
+		<!-- Event ID 2: A process changed a file creation time -->
+		<FileCreateTime onmatch="include">
+			<Image condition="begin with">C:\Users</Image> 
+		</FileCreateTime>
+		<FileCreateTime onmatch="exclude">
+			<Image condition="end with">"Microsoft\OneDrive\OneDrive.exe</Image>
+			<Image condition="end with">Mozilla Firefox\firefox.exe</Image>
+			<Image condition="end with">Google\Chrome\Application\chrome.exe</Image>
+		</FileCreateTime>
+		<!--Event ID 3: Network connection-->
+		<NetworkConnect onmatch="include">
+			<!-- Suspicious Directories-->
+			<Image condition="begin with">C:\Users</Image>
+			<Image condition="begin with">C:\ProgramData</Image>
+			<Image condition="begin with">C:\Windows\Temp</Image>
+			<!-- Suspicious Processes-->
+			<Image condition="image">certutil.exe</Image>
+			<Image condition="image">at.exe</Image>
+			<Image condition="image">mshta.exe</Image>
+			<Image condition="image">notepad.exe</Image>
+			<Image condition="image">reg.exe</Image> 
+			<Image condition="image">sc.exe</Image> 
+			<Image condition="image">psexec.exe</Image>
+			<Image condition="image">psexesvc.exe</Image>
+			<Image condition="Image">powershell.exe</Image>
+			<Image condition="Image">cmd.exe</Image>
+			<Image condition="Image">wmic.exe</Image>
+			<Image condition="Image">cscript.exe</Image>
+			<Image condition="Image">wscript.exe</Image>
+			<Image condition="Image">rundll32.exe</Image>
+			<Image condition="image">regsvr32.exe</Image>
+			<!-- Suspicious Ports-->
+			<DestinationPort condition="is">22</DestinationPort> 
+			<DestinationPort condition="is">23</DestinationPort> 
+			<DestinationPort condition="is">25</DestinationPort> 
+			<!-- Tor protocol -->
+			<DestinationPort condition="is">1723</DestinationPort> 
+			<DestinationPort condition="is">4500</DestinationPort> 
+			<DestinationPort condition="is">9001</DestinationPort>  
+		</NetworkConnect>
+		<NetworkConnect onmatch="exclude">
+			<Image condition="image">OneDrive.exe</Image>
+		</NetworkConnect>
+		<!--Event ID 5: Process terminated-->
+		<ProcessTerminate onmatch="include">
+			<Image condition="begin with">C:\Users</Image> 
+			<Image condition="end with">Sysmon.exe</Image>
+			<!--Detect killing Sysmon, Credit: @vector_sec-->
+		</ProcessTerminate>
+		<!--Event ID 6: Driver loaded-->
+		<DriverLoad onmatch="exclude">
+			<Signature condition="is">Microsoft Windows</Signature>
+			<Signature condition="is">Microsoft Corporation</Signature>
+			<Signature condition="is">NVIDIA Corporation</Signature>
+		</DriverLoad>
+		<!--Event ID 7: Image loaded-->
+		<ImageLoad onmatch="include">
+			<Signed condition="is">False</Signed>
+		</ImageLoad>
+		<ImageLoad onmatch="exclude">
+			<ImageLoaded condition="start with">C:\Windows\assembly\NativeImages</ImageLoaded>
+			<ImageLoaded condition="start with">C:\Program Files\WindowsApps</ImageLoaded>			
+		</ImageLoad>
+		<!--Event ID 8: CreateRemoteThread-->
+		<!-- Exclude 'safe' list of certain processes that cause high event volumes -->
+		<CreateRemoteThread onmatch="exclude">
+			<SourceImage condition="is">C:\Windows\System32\wbem\WmiPrvSE.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\svchost.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\wininit.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\csrss.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\services.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\winlogon.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\audiodg.exe</SourceImage>
+			<StartModule condition="is">C:\windows\system32\kernel32.dll</StartModule>
+			<SourceImage condition="is">c:\Program Files\Windows Defender\MsMpEng.exe</SourceImage>			
+		</CreateRemoteThread>
+		<!--Event ID 9: RawAccessRead-->
+		<RawAccessRead onmatch="exclude">
+			<!-- Exclude 'safe' list of certain processes that cause high event volumes -->
+			<Image condition="is">System</Image>
+			<Image condition="is">C:\Windows\CCM\CcmExec.exe</Image>
+			<Image condition="is">C:\Windows\System32\svchost.exe</Image>
+			<Image condition="is">C:\Program Files\Windows Defender\MsMpEng.exe</Image>
+			<Image condition="is">C:\Windows\System32\SrTasks.exe</Image>
+			<Image condition="is">C:\Windows\System32\MRT.exe</Image>
+			<Image condition="is">C:\Windows\System32\SearchIndexer.exe</Image>
+			<Image condition="is">C:\Windows\System32\winlogon.exe</Image>
+			<Image condition="is">C:\Windows\System32\smss.exe</Image>
+			<Image condition="is">C:\Windows\System32\autochk.exe</Image>
+			<Image condition="is">C:\Windows\System32\CompatTelRunner.exe</Image>
+			<Image condition="is">C:\Windows\System32\DeviceCensus.exe</Image>
+			<Image condition="is">C:\Windows\System32\wininit.exe</Image>
+			<Image condition="is">C:\Windows\System32\VSSVC.exe</Image>
+			<Image condition="is">C:\Windows\System32\bcdedit.exe</Image>
+			<Image condition="is">C:\Windows\System32\WinSAT.exe</Image>
+			<Image condition="is">C:\Windows\SysWOW64\msiexec.exe</Image>
+			<Image condition="is">C:\Windows\explorer.exe</Image>
+			<Image condition="is">C:\Windows\System32\DiskSnapshot.exe</Image>
+		</RawAccessRead>
+		<!--Event ID 10: ProcessAccess-->
+		<ProcessAccess onmatch="include">
+			<TargetImage condition="is">C:\Windows\system32\lsass.exe</TargetImage>
+			<TargetImage condition="contains">chrome.exe</TargetImage>
+			<TargetImage condition="contains">iexplore.exe</TargetImage>
+			<TargetImage condition="contains">firefox.exe</TargetImage>
+		</ProcessAccess>
+		<ProcessAccess onmatch="exclude">
+			<!-- Exclude 'safe' list of certain processes that cause high event volumes -->
+			<SourceImage condition="is">c:\windows\system32\svchost.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\wbem\wmiprvse.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\System32\perfmon.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\LogonUI.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\MRT.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\System32\MsiExec.exe</SourceImage>
+			<SourceImage condition="is">C:\windows\CCM\CcmExec.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\taskmgr.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\lsass.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\services.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\wininit.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\csrss.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\System32\smss.exe</SourceImage>
+			<SourceImage condition="is">C:\Program Files\Windows Defender Advanced Threat Protection\MsSense.exe</SourceImage>
+			<SourceImage condition="is">C:\Windows\syswow64\MsiExec.exe</SourceImage>			
+		</ProcessAccess>
+		<!--Event ID 11: FileCreate-->
+		<FileCreate onmatch="include">
+			<!-- Windows File System on Startup Persistence -->
+			<TargetFilename condition="contains">\Startup\</TargetFilename>
+			<TargetFilename condition="contains">\Start Menu</TargetFilename> 
+			<TargetFilename condition="contains">\Content.Outlook\</TargetFilename>
+			<TargetFilename condition="contains">\Downloads\</TargetFilename>
+			<TargetFilename condition="begin with">C:\Windows\System32\Tasks</TargetFilename>
+			<TargetFilename condition="begin with">C:\Windows\System32\WindowsPowerShell</TargetFilename>
+			<TargetFilename condition="begin with">C:\Windows\SysWOW64\WindowsPowerShell</TargetFilename>
+			<!-- Suspicious Files-->
+			<TargetFilename condition="end with">.cmd</TargetFilename>
+			<TargetFilename condition="end with">.bat</TargetFilename>
+			<TargetFilename condition="end with">.exe</TargetFilename> 
+			<TargetFilename condition="end with">.sys</TargetFilename>
+			<TargetFilename condition="end with">.hta</TargetFilename>			
+			<TargetFilename condition="end with">.ps1</TargetFilename>
+			<TargetFilename condition="end with">.vbs</TargetFilename>			
+		</FileCreate>
+		<!--Event ID 12: RegistryEvent (Object create and delete)-->
+		<!--Event ID 13: RegistryEvent (Value Set)-->
+		<!--Event ID 14: RegistryEvent (Key and Value Rename)-->
+		<RegistryEvent onmatch="include">
+			<!-- Windows Registry Persistence -->
+			<TargetObject condition="contains">Software\Microsoft\Windows\CurrentVersion\Run</TargetObject>
+			<TargetObject condition="contains">CurrentControlSet\Control\Session Manager\BootExecute</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows\CurrentVersion\RunServicesOnce</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows\CurrentVersion\RunServices</TargetObject>
+			<TargetObject condition="contains">SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Notify</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows NT\CurrentVersion\Winlogon</TargetObject>
+			<TargetObject condition="contains">SOFTWARE\Microsoft\Windows\CurrentVersion\ShellServiceObjectDelayLoad</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows\CurrentVersion\RunOnce</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows\CurrentVersion\RunOnceEx</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows NT\CurrentVersion\Windows\load</TargetObject>
+			<TargetObject condition="contains">Software\Microsoft\Windows NT\CurrentVersion\Windows\\AppInit_DLLs</TargetObject>
+			<TargetObject condition="contains">SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs</TargetObject>
+			<!-- Malicious Security Support Provider -->
+			<TargetObject condition="contains">System\CurrentControlSet\Control\Lsa\Security Packages</TargetObject>
+		</RegistryEvent>
+		<!--Event ID 15: FileCreateStreamHash-->
+		<FileCreateStreamHash onmatch="include">
+			<!-- Suspicious Files-->
+			<TargetFilename condition="contains">Content.Outlook</TargetFilename>
+			<TargetFilename condition="contains">Downloads</TargetFilename>
+			<TargetFilename condition="contains">Temp\7z</TargetFilename>
+			<TargetFilename condition="end with">.bat</TargetFilename>
+			<TargetFilename condition="end with">.cmd</TargetFilename>
+			<TargetFilename condition="end with">.hta</TargetFilename>
+			<TargetFilename condition="end with">.lnk</TargetFilename>
+			<TargetFilename condition="end with">.ps1</TargetFilename>
+			<TargetFilename condition="end with">.ps2</TargetFilename>
+			<TargetFilename condition="end with">.reg</TargetFilename>
+			<TargetFilename condition="end with">.vb</TargetFilename>
+			<TargetFilename condition="end with">.vbe</TargetFilename>
+			<TargetFilename condition="end with">.vbs</TargetFilename>
+			<TargetFilename condition="end with">.scr</TargetFilename>
+		</FileCreateStreamHash>
+		<!--Event ID 17: PipeEvent (Pipe Created)-->
+		<!--Event ID 18: PipeEvent (Pipe Connected)-->
+		<PipeEvent onmatch="exclude">
+			<PipeName condition="contains">lsass</PipeName>
+			<PipeName condition="is">\SQLLocal\RTCLOCAL</PipeName>
+			<PipeName condition="is">\ntsvcs</PipeName>
+			<PipeName condition="is">\scerpc</PipeName>
+			<PipeName condition="is">\epmapper</PipeName>
+			<PipeName condition="is">\atsvc</PipeName>
+			<PipeName condition="is">\browser</PipeName>
+			<PipeName condition="is">\srvsvc</PipeName>
+			<PipeName condition="is">\Winsock2CatelogChangeListener</PipeName>
+			<PipeName condition="contains">ProtectedPrefix\LocalService\FTHPIPE</PipeName>
+			<PipeName condition="is">\W32TIME_ALT</PipeName>
+			<PipeName condition="is">\eventlog</PipeName>
+			<PipeName condition="is">\wkssvc</PipeName>
+			<PipeName condition="contains">\TDLN-</PipeName>
+			<PipeName condition="is">\WiFiNetworkManagerTask</PipeName>
+			<PipeName condition="is">\MsFteWds</PipeName>
+			<Image condition="is">\System</Image>
+			<Image condition="is">C:\Windows\System32\wininit.exe</Image>
+			<Image condition="is">C:\Windows\System32\SearchIndexer.exe</Image>
+			<Image condition="is">C:\Windows\System32\services.exe</Image>
+		</PipeEvent>
+		<!--Event ID 19: WmiEvent (WmiEventFilter activity detected)-->
+		<!--Event ID 20: WmiEvent (WmiEventConsumer activity detected)-->
+		<!--Event ID 21: WmiEvent (WmiEventConsumerToFilter activity detected)-->
+		<WmiEvent onmatch='exclude'>
+		</WmiEvent>
+	</EventFiltering>
+</Sysmon>
