@@ -9,7 +9,7 @@
 		LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY 
 		AND/OR FITNESS FOR A PARTICULAR PURPOSE
 		Use is subject to the terms specified at http://www.microsoft.com/info/cpyright.htm. -->
-<Sysmon schemaversion="3.30">
+<Sysmon schemaversion="3.40">
 	<HashAlgorithms>SHA256,IMPHASH</HashAlgorithms>
 	<EventFiltering>
 		<!--Event ID 1: Process creation-->
@@ -107,8 +107,8 @@
 			<Signed condition="is">False</Signed>
 		</ImageLoad>
 		<ImageLoad onmatch="exclude">
-			<ImageLoaded condition="start with">C:\Windows\assembly\NativeImages</ImageLoaded>
-			<ImageLoaded condition="start with">C:\Program Files\WindowsApps</ImageLoaded>			
+			<ImageLoaded condition="begin with">C:\Windows\assembly\NativeImages</ImageLoaded>
+			<ImageLoaded condition="begin with">C:\Program Files\WindowsApps</ImageLoaded>			
 		</ImageLoad>
 		<!--Event ID 8: CreateRemoteThread-->
 		<!-- Exclude 'safe' list of certain processes that cause high event volumes -->
