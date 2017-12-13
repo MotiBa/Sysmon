@@ -128,6 +128,7 @@
 			<!-- Exclude 'safe' list of certain processes that cause high event volumes -->
 			<Image condition="is">System</Image>
 			<Image condition="is">C:\Windows\CCM\CcmExec.exe</Image>
+			<Image condition="is">C:\Windows\System32\wbem\WmiPrvSE.exe</Image>
 			<Image condition="is">C:\Windows\System32\svchost.exe</Image>
 			<Image condition="is">C:\Program Files\Windows Defender\MsMpEng.exe</Image>
 			<Image condition="is">C:\Windows\System32\SrTasks.exe</Image>
@@ -260,7 +261,7 @@
 		<!--Event ID 19: WmiEvent (WmiEventFilter activity detected)-->
 		<!--Event ID 20: WmiEvent (WmiEventConsumer activity detected)-->
 		<!--Event ID 21: WmiEvent (WmiEventConsumerToFilter activity detected)-->
-		<WmiEvent onmatch='exclude'>
+		<WmiEvent onmatch="exclude">
 		</WmiEvent>
 	</EventFiltering>
 </Sysmon>
