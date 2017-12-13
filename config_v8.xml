@@ -8,8 +8,7 @@
 		EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT 
 		LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY 
 		AND/OR FITNESS FOR A PARTICULAR PURPOSE
-		Use is subject to the terms specified at http://www.microsoft.com/info/cpyright.htm. 
--->
+		Use is subject to the terms specified at http://www.microsoft.com/info/cpyright.htm. -->
 <Sysmon schemaversion="3.30">
 	<HashAlgorithms>SHA256,IMPHASH</HashAlgorithms>
 	<EventFiltering>
