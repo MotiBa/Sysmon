@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--	Sysmon Full Logging configuration file (Updated: 5/30/2018)
+		Created by: Moti Bani (Moti.Ba@hotmail.com)
+		=====================================================
+		THIS SAMPLE FILE AND ANY RELATED INFORMATION 
+		ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, 
+		EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT 
+		LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY 
+		AND/OR FITNESS FOR A PARTICULAR PURPOSE
+		Use is subject to the terms specified at http://www.microsoft.com/info/cpyright.htm. -->
+<Sysmon schemaversion="4.0">
+  <HashAlgorithms>md5,sha1</HashAlgorithms>
+  <!-- Disguising driver name -->
+  <DriverName>FSInfo</DriverName>
+  <EventFiltering>
+    <!--Event ID 1: Process creation-->
+    <ProcessCreate onmatch="exclude" />
+    <!-- Event ID 2: A process changed a file creation time -->
+    <FileCreateTime onmatch="exclude" />
+    <!--Event ID 3: Network connection-->
+    <NetworkConnect onmatch="exclude" />
+	<!--Event ID 4: Sysmon service state changed-->	
+    <!--Event ID 5: Process terminated-->
+    <ProcessTerminate onmatch="exclude" />
+    <!--Event ID 6: Driver loaded-->
+    <DriverLoad onmatch="exclude" />
+    <!--Event ID 7: Image loaded-->
+    <ImageLoad onmatch="include" />
+    <!--Event ID 8: CreateRemoteThread-->
+    <CreateRemoteThread onmatch="exclude" />
+    <!--Event ID 9: RawAccessRead-->
+    <RawAccessRead onmatch="exclude" />      
+    <!--Event ID 10: ProcessAccess-->
+    <ProcessAccess onmatch="exclude" />     
+    <!--Event ID 11: FileCreate-->
+    <FileCreate onmatch="exclude" />
+    <!--Event ID 12: RegistryEvent (Object create and delete)-->
+    <!--Event ID 13: RegistryEvent (Value Set)-->
+    <!--Event ID 14: RegistryEvent (Key and Value Rename)-->
+    <!--Event ID 15: FileCreateStreamHash-->
+    <FileCreateStreamHash onmatch="exclude" />     
+    <!--Event ID 17: PipeEvent (Pipe Created)-->
+    <!--Event ID 18: PipeEvent (Pipe Connected)-->
+    <PipeEvent onmatch="exclude" />
+	<!--Event ID 19: WmiEvent (WmiEventFilter activity detected)-->
+    <!--Event ID 20: WmiEvent (WmiEventConsumer activity detected)-->
+    <!--Event ID 21: WmiEvent (WmiEventConsumerToFilter activity detected)-->
+    <!-- Event ID 19,20,21: - WmiEvent (WmiEventFilter activity detected) -->
+    <WmiEvent onmatch="exclude" />
+		
+  </EventFiltering>
+</Sysmon>
